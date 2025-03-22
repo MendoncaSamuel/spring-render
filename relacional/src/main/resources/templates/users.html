@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciamento de Usuários</title>
+  <!-- Link para o Bootstrap -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Gerenciamento de Usuários</h1>
+
+  <h2>Profissões</h2>
+  <form action="#" th:action="@{/addProfissao}" method="post" class="mb-4">
+    <div class="form-group">
+      <input type="text" name="titulo" placeholder="Título da Profissão" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Inserir a Profissão</button>
+  </form>
+
+  <h2>Usuários</h2>
+  <form action="#" th:action="@{/addUser}" method="post" class="mb-4">
+    <div class="form-group">
+      <input type="text" name="nome" placeholder="Nome do Usuário" class="form-control" required />
+      <select name="profissaoID" class="form-control" required>
+        <option th:each="profissao : ${profissoes}" th:value="${profissao.id}" th:text="${profissao.titulo}"></option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Inserir Usuário</button>
+  </form>
+
+
+  <h3>Lista de Usuários</h3>
+  <ul class="list-group">
+    <!-- Lista de usuários será adicionada aqui -->
+    <li th:each="user : ${users}">
+      <span th:text="${user.nome}"></span>
+      <span>com a profissão</span>
+      <span th:text="${user.profissao.titulo}"></span>
+    </li>
+
+  </ul>
+</div>
+</body>
+</html>
+
