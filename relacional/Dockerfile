@@ -1,31 +1,27 @@
-#Etapa de construção
-#FROM maven:3.4.3-openjdk-21 AS build
-#FROM ubuntu:latest AS build
-FROM openjdk:21-jdk-slim AS build
-RUN apt-get update && apt-get-install -y maven  && apt-get clean && rm -rf/var/lib/apt/lists/*
+# Etapa de construção
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
+# Definir o diretório de trabalho
+WORKDIR /app
+
+# Copiar os arquivos do projeto
+COPY projeto/pom.xml /app/
+COPY projeto/src/ /app/src/
 
 
-#Definir o diretório dentro do container para aplicação
-WORKDIR /relacional
 
-#Copiar o pom.xml para o container
-COPY po.xml .
-COPY src ./src
-
-#Executar o maven para compliar o projeto e gerar o arquivo JAR File. 
+# Compilar o projeto
 RUN mvn clean package -DskipTests
 
-#Etapa de Execucao
+# Etapa de execução
 FROM openjdk:21-slim
+WORKDIR /app
 
-#Definir o diretorio de trabalho para a aplicacao
-WORKDIR /relacional
+# Copiar o JAR gerado
+COPY --from=build /app/target/*.jar app.jar
 
-#Copiar p JAR construido na etapa anterior
-COPY --from=build /relacional/target/*.jar relacional.jar
+# Expor a porta
+EXPOSE 8080
 
-#Defininr a porta que sera utilizada na aplicacao
-EXPOSE 8284
-
-#Comando para executar a aplicacao
-ENTRYPOINT [ "java", "-jar", relacional.jar ]
+# Rodar a aplicação
+ENTRYPOINT ["java", "-jar", "app.jar"]
